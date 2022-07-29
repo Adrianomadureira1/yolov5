@@ -23,6 +23,7 @@ import json
 import os
 import sys
 from pathlib import Path
+import pandas as pd
 
 import numpy as np
 import torch
@@ -263,11 +264,29 @@ def run(
         callbacks.run('on_val_batch_end')
 
     # Compute metrics
+    try:
+        print("Loading test_results.xlsx file.")
+        pd.read_excel("/content/drive/MyDrive/results/test_results.xlsx")
+        print("OK!")
+    except:
+        print("Failed! Creating a new test_results.xlsx file.")
+        df = pd.DataFrame(columns=["Model","P","R","F1","AP50","AP"])
+        print("OK!")
+
     stats = [torch.cat(x, 0).cpu().numpy() for x in zip(*stats)]  # to numpy
     if len(stats) and stats[0].any():
         tp, fp, p, r, f1, ap, ap_class = ap_per_class(*stats, plot=plots, save_dir=save_dir, names=names)
         ap50, ap = ap[:, 0], ap.mean(1)  # AP@0.5, AP@0.5:0.95
         mp, mr, map50, map = p.mean(), r.mean(), ap50.mean(), ap.mean()
+        
+        print("Appending a new row to test_results.xlsx file.")
+        df.append([weights, mp, mr, f1, map50, map], ignore_index=True)
+        print("OK!")
+
+        print("Saving the results of test_results.xlsx file.")
+        df.to_excel("/content/drive/MyDrive/results/test_results.xlsx")
+        print("OK!")
+
         nt = np.bincount(stats[3].astype(int), minlength=nc)  # number of targets per class
     else:
         nt = torch.zeros(1)
