@@ -278,18 +278,6 @@ def run(
         tp, fp, p, r, f1, ap, ap_class = ap_per_class(*stats, plot=plots, save_dir=save_dir, names=names)
         ap50, ap = ap[:, 0], ap.mean(1)  # AP@0.5, AP@0.5:0.95
         mp, mr, map50, map = p.mean(), r.mean(), ap50.mean(), ap.mean()
-        
-        print("Appending a new row to test_results.xlsx file.")
-        df = df.append({"Model":weights[0].replace("/content/drive/MyDrive/models/",""),
-        "Task":task,
-        "Images":dt[1],
-        "Labels":dt[2],
-        "P":mp,"R":mr,"F1":f1[0],"AP50":map50,"AP":map}, ignore_index=True)
-        print("OK!")
-
-        print("Saving the results of test_results.xlsx file.")
-        df.to_excel("/content/drive/MyDrive/results/test_results.xlsx", index=False)
-        print("OK!")
 
         nt = np.bincount(stats[3].astype(int), minlength=nc)  # number of targets per class
     else:
@@ -298,6 +286,19 @@ def run(
     # Print results
     pf = '%20s' + '%11i' * 2 + '%11.3g' * 4  # print format
     LOGGER.info(pf % ('all', seen, nt.sum(), mp, mr, map50, map))
+
+    print("Appending a new row to test_results.xlsx file.")
+    df = df.append({"Model":weights[0].replace("/content/drive/MyDrive/models/",""),
+    "Task":task,
+    "Images":seen,
+    "Labels":nt.sum(),
+    "P":mp,"R":mr,"F1":f1[0],"AP50":map50,"AP":map}, ignore_index=True)
+    print("OK!")
+
+    print("Saving the results of test_results.xlsx file.")
+    df.to_excel("/content/drive/MyDrive/results/test_results.xlsx", index=False)
+    print("OK!")
+    
     if nt.sum() == 0:
         LOGGER.warning(emojis(f'WARNING: no labels found in {task} set, can not compute metrics without labels ⚠️'))
 
