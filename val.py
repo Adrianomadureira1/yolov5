@@ -266,7 +266,7 @@ def run(
     # Compute metrics
     try:
         print("Loading test_results.xlsx file.")
-        pd.read_excel("/content/drive/MyDrive/results/test_results.xlsx")
+        df = pd.read_excel("/content/drive/MyDrive/results/test_results.xlsx")
         print("OK!")
     except:
         print("Failed! Creating a new test_results.xlsx file.")
