@@ -270,7 +270,7 @@ def run(
         print("OK!")
     except:
         print("Failed! Creating a new test_results.xlsx file.")
-        df = pd.DataFrame(columns=["Model","P","R","F1","AP50","AP"])
+        df = pd.DataFrame(columns=["Model","Task","Images","Labels","P","R","F1","AP50","AP"])
         print("OK!")
 
     stats = [torch.cat(x, 0).cpu().numpy() for x in zip(*stats)]  # to numpy
@@ -280,7 +280,11 @@ def run(
         mp, mr, map50, map = p.mean(), r.mean(), ap50.mean(), ap.mean()
         
         print("Appending a new row to test_results.xlsx file.")
-        df = df.append({"Model":weights[0].replace("/content/drive/MyDrive/models/",""),"P":mp,"R":mr,"F1":f1[0],"AP50":map50,"AP":map}, ignore_index=True)
+        df = df.append({"Model":weights[0].replace("/content/drive/MyDrive/models/",""),
+        "Task":task,
+        "Images":dt[1],
+        "Labels":dt[2],
+        "P":mp,"R":mr,"F1":f1[0],"AP50":map50,"AP":map}, ignore_index=True)
         print("OK!")
 
         print("Saving the results of test_results.xlsx file.")
