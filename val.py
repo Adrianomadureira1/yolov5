@@ -280,11 +280,11 @@ def run(
         mp, mr, map50, map = p.mean(), r.mean(), ap50.mean(), ap.mean()
         
         print("Appending a new row to test_results.xlsx file.")
-        df = df.append({"Model":weights,"P":mp,"R":mr,"F1":f1,"AP50":map50,"AP":map}, ignore_index=True)
+        df = df.append({"Model":weights[0].replace("/content/drive/MyDrive/models/",""),"P":mp,"R":mr,"F1":f1[0],"AP50":map50,"AP":map}, ignore_index=True)
         print("OK!")
 
         print("Saving the results of test_results.xlsx file.")
-        df.to_excel("/content/drive/MyDrive/results/test_results.xlsx")
+        df.to_excel("/content/drive/MyDrive/results/test_results.xlsx", index=False)
         print("OK!")
 
         nt = np.bincount(stats[3].astype(int), minlength=nc)  # number of targets per class
