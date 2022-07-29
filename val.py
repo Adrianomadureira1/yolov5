@@ -280,7 +280,7 @@ def run(
         mp, mr, map50, map = p.mean(), r.mean(), ap50.mean(), ap.mean()
         
         print("Appending a new row to test_results.xlsx file.")
-        df.append({"Model":weights,"P":mp,"R":mr,"F1":f1,"AP50":map50,"AP":map}, ignore_index=True)
+        df = df.append({"Model":weights,"P":mp,"R":mr,"F1":f1,"AP50":map50,"AP":map}, ignore_index=True)
         print("OK!")
 
         print("Saving the results of test_results.xlsx file.")
